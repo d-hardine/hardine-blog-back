@@ -4,7 +4,8 @@ const session = require('express-session')
 const pgSession = require('connect-pg-simple')(session)
 const pool = require('./db/pool')
 const passport = require('passport')
-const blogRoute = require('./routes/blogRoute')
+const blogRouter = require('./routes/blogRouter')
+const userRouter = require('./routes/userRouter')
 
 require('dotenv').config()
 
@@ -13,7 +14,7 @@ const app = express()
 
 //cors setting
 const corsOptions = {
-  origin: 'http://localhost:5173/', // Replace with your React app's URL
+  origin: 'http://localhost:5173', // Replace with your React app's URL
   credentials: true, // This allows the browser to send/receive cookies
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -61,7 +62,8 @@ app.get('/', (req, res) => {
 })
 
 //routes middleware
-app.use('/api', blogRoute)
+app.use('/api', blogRouter)
+app.use('/api', userRouter)
 
 // Need to require the entire Passport library module so index.js knows about it
 require('./lib/passport')

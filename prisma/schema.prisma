@@ -12,20 +12,33 @@ datasource db {
   provider = "postgresql"
 }
 
-model User { 
-  id    Int     @id @default(autoincrement()) 
-  email String  @unique
-  name  String?
-  posts Post[]
-} 
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+  posts     Post[]
+}
 
-model Post { 
-  id        Int     @id @default(autoincrement()) 
+model Post {
+  id        String   @id @default(uuid())
+  thumbnail String   @default("https://res.cloudinary.com/do1rucyzl/image/upload/v1769052594/placeholder-image_x8y4ld.png")
   title     String
-  content   String?
-  published Boolean @default(false) 
-  author    User    @relation(fields: [authorId], references: [id]) 
-  authorId  Int
+  subtitle  String
+  content   String
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tags      Tag[]
+}
+
+model Tag {
+  id    String @id @default(uuid())
+  name  String @unique
+  posts Post[] // Many-to-Many relations back to posts
 }
 
 model session {
