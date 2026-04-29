@@ -1,7 +1,5 @@
 const express = require('express')
 const cors = require('cors')
-const session = require('express-session')
-const pgSession = require('connect-pg-simple')(session)
 const pool = require('./db/pool')
 const passport = require('passport')
 const blogRouter = require('./routes/blogRouter')
@@ -31,30 +29,8 @@ app.use(express.urlencoded({extended: true}))
 //initializing cloudinary
 require('./lib/cloudinary')
 
-//create session table inside postgres
-const sessionStore = new pgSession({
-  pool: pool,
-  createTableIfMissing: true //if you're using prisma, please make the session table at your schema yourself
-})
-
-//setting up session and store it to postgres db
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store: sessionStore,
-  proxy: true,
-  cookie: {
-    maxAge: 1000 /*1 sec*/ * 60 /*1 minute*/ * 60 /*1 hour*/ * 24 /*1 day*/ * 7, //equals 1 week
-    httpOnly: true, //for security, prevents JS access
-    secure: process.env.DEV_MODE ? false : true,
-    sameSite: 'lax',
-  }
-}))
-
 //enable passport middleware to use session
 app.use(passport.initialize())
-app.use(passport.session())
 
 //home directory initialization
 app.get('/', (req, res) => {

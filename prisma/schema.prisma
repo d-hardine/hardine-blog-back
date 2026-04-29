@@ -40,11 +40,3 @@ model Tag {
   name  String @unique
   posts Post[] // Many-to-Many relations back to posts
 }
-
-model session {
-  sid    String   @id @db.VarChar
-  sess   Json     @db.Json
-  expire DateTime @db.Timestamp(6)
-
-  @@index([expire], map: "IDX_session_expire")
-}

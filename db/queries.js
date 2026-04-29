@@ -1,12 +1,6 @@
 //import { prisma } from '../lib/prisma.js' //ESM format
 const { prisma } = require('../lib/prisma.js') //CJS format
 
-async function duplicateUsernameSearch(inputtedUsername) {
-  return await prisma.user.findUnique({
-    where: {username: inputtedUsername}
-  })
-}
-
 async function createNewUser(username, displayName, password) {
   return await prisma.user.create({
     data: {
@@ -15,6 +9,10 @@ async function createNewUser(username, displayName, password) {
       password: password
     }
   })
+}
+
+async function findUniqueUser(username) {
+  return await prisma.user.findUnique({where: {username: username}})
 }
 
 async function retrieveAllPosts() {
@@ -50,8 +48,8 @@ async function retrievePost(postId) {
 }
 
 module.exports = {
-  duplicateUsernameSearch,
   createNewUser,
+  findUniqueUser,
   retrieveAllPosts,
   retrievePost,
  }
