@@ -18,7 +18,9 @@ model User {
   name      String
   password  String
   createdAt DateTime @default(now())
+  role      Role     @default(USER)
   posts     Post[]
+  comments Comment[]
 }
 
 model Post {
@@ -32,11 +34,27 @@ model Post {
   authorId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  tags      Tag[]
+  tags      Tag[] @relation("PostTags")
+  comments Comment[]
 }
 
 model Tag {
   id    String @id @default(uuid())
   name  String @unique
-  posts Post[] // Many-to-Many relations back to posts
+  posts Post[] @relation("PostTags")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  body      String
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
 }

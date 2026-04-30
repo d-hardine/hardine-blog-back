@@ -23,11 +23,38 @@ async function retrieveAllPosts() {
           name: true,
           username: true,
         }
-      }
+      },
+      tags: true
     },
     omit: {
       content: true
-    }
+    },
+    orderBy: { createdAt: 'desc' }
+  })
+}
+
+async function retrieveSpecificPosts(tagName) {
+  return await prisma.post.findMany({
+    where: {
+      tags: {
+        some: {
+          name: tagName
+        }
+      }
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+          username: true,
+        }
+      },
+      tags: true
+    },
+    omit: {
+      content: true
+    },
+    orderBy: { createdAt: 'desc' }
   })
 }
 
@@ -42,6 +69,46 @@ async function retrievePost(postId) {
           name: true,
           username: true,
         }
+      },
+      tags: true
+    }
+  })
+}
+
+async function retrieveAllTags() {
+  return await prisma.tag.findMany()
+}
+
+async function retrieveComments(postId) {
+  return await prisma.comment.findMany({
+    where: {postId: postId},
+    include: {author: true},
+    orderBy: {createdAt: 'asc'}
+  })
+}
+
+async function postNewComment(newComment, postId, userId) {
+  return await prisma.comment.create({
+    data: {
+      authorId: userId,
+      body: newComment,
+      postId: postId
+    }
+  })
+}
+
+async function postNewArticle(authorId, title, subtitle, content, tags) {
+  return await prisma.post.create({
+    data: {
+      authorId: authorId,
+      title: title,
+      subtitle: subtitle,
+      content: content,
+      tags: {
+        connectOrCreate: tags.map((tagName) => ({
+          where: { name: tagName },
+          create: { name: tagName },
+        }))
       }
     }
   })
@@ -51,5 +118,10 @@ module.exports = {
   createNewUser,
   findUniqueUser,
   retrieveAllPosts,
+  retrieveSpecificPosts,
   retrievePost,
+  retrieveAllTags,
+  retrieveComments,
+  postNewComment,
+  postNewArticle,
  }
