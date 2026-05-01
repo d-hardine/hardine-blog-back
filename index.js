@@ -4,6 +4,7 @@ const pool = require('./db/pool')
 const passport = require('passport')
 const blogRouter = require('./routes/blogRouter')
 const userRouter = require('./routes/userRouter')
+const blogEditorRouter = require('./routes/blogEditorRouter')
 
 require('dotenv').config()
 
@@ -40,6 +41,7 @@ app.get('/', (req, res) => {
 //routes middleware
 app.use('/api', blogRouter)
 app.use('/api', userRouter)
+app.use('/editor', blogEditorRouter)
 
 // Need to require the entire Passport library module so index.js knows about it
 require('./lib/passport')
