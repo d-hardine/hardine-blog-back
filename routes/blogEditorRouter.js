@@ -12,4 +12,7 @@ blogEditorRouter.get('/auth', passport.authenticate('jwt', {session: false}), (r
 blogEditorRouter.get('/all-posts', blogEditorController.getAllPosts)
 blogEditorRouter.get('/all-tags', blogEditorController.getAllTags)
 
+blogEditorRouter.post('/create-post', passport.authenticate('jwt', {session: false}), blogEditorController.uploadImage, blogEditorController.contentPost)
+blogEditorRouter.put('/publish/:postId', blogEditorController.updatePublish)
+
 module.exports = blogEditorRouter

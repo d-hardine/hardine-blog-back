@@ -97,19 +97,37 @@ async function postNewComment(newComment, postId, userId) {
   })
 }
 
-async function postNewArticle(authorId, title, subtitle, content, tags) {
+async function postNewArticle(authorId, title, subtitle, content, postPictureUrl, tags) {
   return await prisma.post.create({
     data: {
       authorId: authorId,
       title: title,
       subtitle: subtitle,
       content: content,
+      postPicture: postPictureUrl,
       tags: {
         connectOrCreate: tags.map((tagName) => ({
           where: { name: tagName },
           create: { name: tagName },
         }))
       }
+    }
+  })
+}
+
+async function updatePublish(postId) {
+  const prevPost = await prisma.post.findUnique({
+    where: {
+      id: postId
+    }
+  })
+
+  return await prisma.post.update({
+    where: {
+      id: postId
+    },
+    data: {
+      isPublished: !prevPost.isPublished
     }
   })
 }
@@ -124,4 +142,5 @@ module.exports = {
   retrieveComments,
   postNewComment,
   postNewArticle,
+  updatePublish
  }

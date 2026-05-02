@@ -2,6 +2,7 @@ const db = require('../db/queries')
 const bcrypt = require('bcryptjs')
 const jsonwebtoken = require('jsonwebtoken')
 const passport = require('passport')
+const cloudinary = require('cloudinary').v2
 
 //issue JWT
 const issueJWT = (user) => {
@@ -22,6 +23,37 @@ const issueJWT = (user) => {
     expires: expiresIn
   }
 }
+
+//multer setup
+const path = require('node:path')
+const multer  = require('multer')
+const storage = multer.diskStorage({
+    filename: function (req, file, cb) {
+        let fn = file.originalname + ' - ' + Date.now() + path.extname(file.originalname)
+        cb(null, fn)
+    }
+})
+const fileFilter = (req, file, cb) => { //filter that only image file that can be uploaded
+  // Check file types (mimetype) and extensions
+  const allowedTypes = /jpeg|jpg|png|webp/;
+  const mimetype = allowedTypes.test(file.mimetype);
+  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+
+  if (mimetype && extname) {
+    return cb(null, true); // Accept file
+  }
+  
+  // Reject file and pass an error message
+  cb(new Error('Only image files (JPEG, JPG, PNG) are allowed!'), false); 
+};
+const upload = multer({
+  storage: storage,
+  limits: {fileSize: 1048576}, // 1 MB
+  fileFilter: fileFilter
+})
+
+//use this multer upload middleware to upload stuff
+const uploadImage = upload.single('image')
 
 const loginPost = async (req, res, next) => {
   try {
@@ -57,4 +89,19 @@ const getAllTags = async (req, res) => {
   res.status(200).json({message: "All posts retrieved", allTags})
 }
 
-module.exports = { loginPost, getAllPosts, getAllTags }
+const contentPost = async (req, res, next) => {
+  const { title, subtitle, tags, content } = req.body
+  const tagArray = tags.split(',')
+
+  const uploadToCloud = await cloudinary.uploader.upload(req.file.path) //upload to cloud
+  await db.postNewArticle(req.user.id, title, subtitle, content, uploadToCloud.secure_url, tagArray)
+
+  res.status(200).json({message: "new post created"})
+}
+
+const updatePublish = async (req, res) => {
+  const updatedPublishStatus = await db.updatePublish(req.params.postId)
+  res.status(200).json({message: 'publish status successfully updated', updatedPublishStatus})
+}
+
+module.exports = { uploadImage, loginPost, getAllPosts, getAllTags, contentPost, updatePublish }

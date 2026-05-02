@@ -29,7 +29,7 @@ model Post {
   title       String
   subtitle    String
   content     String
-  published   Boolean   @default(false)
+  isPublished Boolean   @default(false)
   author      User      @relation(fields: [authorId], references: [id])
   authorId    String
   createdAt   DateTime  @default(now())
