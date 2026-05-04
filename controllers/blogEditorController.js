@@ -104,4 +104,9 @@ const updatePublish = async (req, res) => {
   res.status(200).json({message: 'publish status successfully updated', updatedPublishStatus})
 }
 
-module.exports = { uploadImage, loginPost, getAllPosts, getAllTags, contentPost, updatePublish }
+const deletePost = async (req, res) => {
+  const deletePost = await db.deletePost(req.params.postId)
+  res.status(200).json({message: 'post successfully deleted', deletePost})
+}
+
+module.exports = { uploadImage, loginPost, getAllPosts, getAllTags, contentPost, updatePublish, deletePost }

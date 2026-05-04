@@ -132,6 +132,20 @@ async function updatePublish(postId) {
   })
 }
 
+async function deletePost(postId) {
+  await prisma.comment.deleteMany({
+    where: {
+      postId: postId
+    }
+  })
+
+  return await prisma.post.delete({
+    where: {
+      id: postId
+    }
+  })
+}
+
 module.exports = {
   createNewUser,
   findUniqueUser,
@@ -142,5 +156,6 @@ module.exports = {
   retrieveComments,
   postNewComment,
   postNewArticle,
-  updatePublish
+  updatePublish,
+  deletePost,
  }
