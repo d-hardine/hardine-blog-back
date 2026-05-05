@@ -146,6 +146,49 @@ async function deletePost(postId) {
   })
 }
 
+async function updateArticle(postId, title, subtitle, content, tags, postPictureUrl) {
+  if(!postPictureUrl) {
+    return await prisma.post.update({
+      where: {
+        id: postId
+      },
+      data: {
+        title: title,
+        subtitle: subtitle,
+        content: content,
+        updatedAt: new Date(),
+        tags: {
+          set: [],
+          connectOrCreate: tags.map((tagName) => ({
+            where: { name: tagName },
+            create: { name: tagName },
+          }))
+        }
+      }
+    })
+  }
+
+  return await prisma.post.update({
+    where: {
+      id: postId
+    },
+    data: {
+      title: title,
+      subtitle: subtitle,
+      content: content,
+      postPicture: postPictureUrl,
+      updatedAt: new Date(),
+      tags: {
+        set: [],
+        connectOrCreate: tags.map((tagName) => ({
+          where: { name: tagName },
+          create: { name: tagName },
+        }))
+      }
+    }
+  })  
+}
+
 module.exports = {
   createNewUser,
   findUniqueUser,
@@ -158,4 +201,5 @@ module.exports = {
   postNewArticle,
   updatePublish,
   deletePost,
+  updateArticle,
  }

@@ -14,6 +14,9 @@ blogEditorRouter.get('/all-tags', blogEditorController.getAllTags)
 
 blogEditorRouter.post('/create-post', passport.authenticate('jwt', {session: false}), blogEditorController.uploadImage, blogEditorController.contentPost)
 blogEditorRouter.put('/publish/:postId', blogEditorController.updatePublish)
+
+blogEditorRouter.get('/post/:postId', blogEditorController.getPost)
 blogEditorRouter.delete('/post/:postId', passport.authenticate('jwt', {session: false}), blogEditorController.deletePost)
+blogEditorRouter.put('/post/:postId', passport.authenticate('jwt', {session: false}), blogEditorController.uploadImage, blogEditorController.updatePost)
 
 module.exports = blogEditorRouter

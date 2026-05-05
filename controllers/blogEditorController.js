@@ -109,4 +109,21 @@ const deletePost = async (req, res) => {
   res.status(200).json({message: 'post successfully deleted', deletePost})
 }
 
-module.exports = { uploadImage, loginPost, getAllPosts, getAllTags, contentPost, updatePublish, deletePost }
+const getPost = async (req, res) => {
+  const post = await db.retrievePost(req.params.postId)
+  res.status(200).json({message: "post retrieved", post})
+}
+
+const updatePost = async (req, res) => {
+  const { title, subtitle, tags, content } = req.body
+  const tagArray = tags.split(',')
+  if(req.body.image !== 'null') {
+    const uploadToCloud = await cloudinary.uploader.upload(req.file.path) //upload to cloud
+    await db.updateArticle(req.params.postId, title, subtitle, content, tagArray, uploadToCloud.secure_url)
+  } else {
+    await db.updateArticle(req.params.postId, title, subtitle, content, tagArray)
+  }
+  res.status(200).json({message: "post successfully updated"})
+}
+
+module.exports = { uploadImage, loginPost, getAllPosts, getAllTags, contentPost, updatePublish, deletePost, getPost, updatePost }
