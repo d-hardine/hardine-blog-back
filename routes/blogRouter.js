@@ -5,6 +5,7 @@ const passport = require('passport')
 const blogRouter = Router()
 
 blogRouter.get('/all-posts', blogController.getAllPosts)
+blogRouter.get('/published-posts', blogController.getPublishedPosts)
 blogRouter.get('/specific-posts/:tagName', blogController.getSpecificPosts)
 blogRouter.get('/post/:postId', blogController.getPost)
 blogRouter.get('/all-tags', blogController.getAllTags)

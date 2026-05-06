@@ -5,6 +5,11 @@ const getAllPosts = async (req, res) => {
   res.status(200).json({message: "All posts retrieved", allPosts})
 }
 
+const getPublishedPosts = async (req, res) => {
+  const publishedPosts = await db.retrievePublishedPosts()
+  res.status(200).json({message: "All published retrieved", publishedPosts})
+}
+
 const getSpecificPosts = async (req, res) => {
   const specificPosts = await db.retrieveSpecificPosts(req.params.tagName)
   res.status(200).json({message: "specific posts retrieved", specificPosts})
@@ -37,4 +42,4 @@ const newArticle = async (req, res) => {
   res.send('new article created')
 }
 
-module.exports = { getAllPosts, getSpecificPosts, getPost, getAllTags, getComments, postNewComment, newArticle }
+module.exports = { getAllPosts, getPublishedPosts, getSpecificPosts, getPost, getAllTags, getComments, postNewComment, newArticle }

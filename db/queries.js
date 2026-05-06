@@ -33,6 +33,27 @@ async function retrieveAllPosts() {
   })
 }
 
+async function retrievePublishedPosts() {
+  return await prisma.post.findMany({
+    where: {
+      isPublished: true
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+          username: true,
+        }
+      },
+      tags: true
+    },
+    omit: {
+      content: true
+    },
+    orderBy: { createdAt: 'desc' }
+  })
+}
+
 async function retrieveSpecificPosts(tagName) {
   return await prisma.post.findMany({
     where: {
@@ -193,6 +214,7 @@ module.exports = {
   createNewUser,
   findUniqueUser,
   retrieveAllPosts,
+  retrievePublishedPosts,
   retrieveSpecificPosts,
   retrievePost,
   retrieveAllTags,
