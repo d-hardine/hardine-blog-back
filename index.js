@@ -11,9 +11,11 @@ require('dotenv').config()
 //express initialization
 const app = express()
 
+const frontUrl = process.env.FRONT_URL || 'http://localhost:5173'
+
 //cors setting
 const corsOptions = {
-  origin: 'http://localhost:5173', // Replace with your React app's URL
+  origin: frontUrl, // Replace with your React app's URL
   credentials: true, // This allows the browser to send/receive cookies
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
