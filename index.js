@@ -11,7 +11,7 @@ require('dotenv').config()
 //express initialization
 const app = express()
 
-const frontUrl = process.env.FRONT_URL || 'http://localhost:5173'
+const frontUrl = [process.env.FRONT_URL_ONE, process.env.FRONT_URL_TWO, 'http://localhost:5173']
 
 //cors setting
 const corsOptions = {
