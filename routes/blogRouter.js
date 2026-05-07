@@ -12,5 +12,6 @@ blogRouter.get('/all-tags', blogController.getAllTags)
 blogRouter.get('/comments/:postId', blogController.getComments)
 blogRouter.post('/new-comment', passport.authenticate('jwt', {session: false}), blogController.postNewComment)
 blogRouter.post('/new-article', blogController.newArticle)
+blogRouter.get('/search-posts', blogController.getSearchedPosts)
 
 module.exports = blogRouter

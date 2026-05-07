@@ -79,6 +79,30 @@ async function retrieveSpecificPosts(tagName) {
   })
 }
 
+async function retrieveSearchedPosts(query) {
+  return await prisma.post.findMany({
+    where: {
+      content: {
+        contains: query,
+        mode: 'insensitive'
+      }
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+          username: true,
+        }
+      },
+      tags: true
+    },
+    omit: {
+      content: true
+    },
+    orderBy: { createdAt: 'desc' }
+  })
+}
+
 async function retrievePost(postId) {
   return await prisma.post.findFirst({
     where: {
@@ -216,6 +240,7 @@ module.exports = {
   retrieveAllPosts,
   retrievePublishedPosts,
   retrieveSpecificPosts,
+  retrieveSearchedPosts,
   retrievePost,
   retrieveAllTags,
   retrieveComments,
